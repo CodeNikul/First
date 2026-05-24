@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0; overflow:hidden;">
+
+<!-- TOGGLE UI -->
+<button onclick="toggleUI()" 
+style="position:absolute; top:10px; right:10px; z-index:20;">
+☰
+</button>
+
+<!-- SIDEBAR -->
+<div id="uiPanel" style="
+position:absolute;
+top:0;
+left:0;
+width:240px;
+height:100%;
+background:#ffffff;
+padding:15px;
+box-shadow:2px 0 10px rgba(0,0,0,0.2);
+z-index:10;
+">
+
+<h3>3D Editor</h3>
+
+<button onclick="addCube()">Cube</button><br><br>
+<button onclick="addSphere()">Sphere</button><br><br>
+<button onclick="addRect()">Rectangle</button><br><br>
+<button onclick="addPyramid()">Pyramid</button><br><br>
+
+<hr>
+
+<b>Color Palette</b><br><br>
+
+<button onclick="setColor('#ff0000')" style="width:25px;height:25px;background:red"></button>
+<button onclick="setColor('#00ff00')" style="width:25px;height:25px;background:green"></button>
+<button onclick="setColor('#0000ff')" style="width:25px;height:25px;background:blue"></button>
+<button onclick="setColor('#ffff00')" style="width:25px;height:25px;background:yellow"></button>
+<button onclick="setColor('#ff00ff')" style="width:25px;height:25px;background:magenta"></button>
+
+<br><br>
+
+<label>Custom Color</label><br>
+<input type="color" id="colorPicker"><br><br>
+
+<p style="font-size:12px;">
+Click = Select<br>
+G = Move<br>
+S = Scale<br>
+R = Rotate<br>
+X/Y/Z = Axis Lock<br>
+Right Drag = Camera<br>
+Scroll = Zoom<br>
+Delete = Remove
+</p>
+
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+
+// ---------------- SCENE ----------------
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+
+// CAMERA
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(6,6,6);
+camera.lookAt(0,0,0);
+
+// RENDERER
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// LIGHT
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const light = new THREE.DirectionalLight(0xffffff,1);
+light.position.set(10,10,10);
+scene.add(light);
+
+// GRID
+scene.add(new THREE.GridHelper(20,20));
+
+// AXIS HELPER
+const axisHelper = new THREE.AxesHelper(2);
+axisHelper.visible = false;
+scene.add(axisHelper);
+
+// ---------------- OBJECT SYSTEM ----------------
+let objects = [];
+let selected = null;
+let mode = null;
+let axis = "all";
+
+// ---------------- UI ----------------
+window.toggleUI = ()=>{
+  const p = document.getElementById("uiPanel");
+  p.style.display = p.style.display === "none" ? "block" : "none";
+};
+
+// ---------------- SHAPES ----------------
+window.addCube = ()=>{
+  createMesh(new THREE.BoxGeometry(1,1,1));
+};
+
+window.addSphere = ()=>{
+  createMesh(new THREE.SphereGeometry(0.5,32,32));
+};
+
+window.addRect = ()=>{
+  createMesh(new THREE.BoxGeometry(2,1,0.2));
+};
+
+window.addPyramid = ()=>{
+  createMesh(new THREE.ConeGeometry(0.8,1.2,4));
+};
+
+function createMesh(geo){
+  const mesh = new THREE.Mesh(
+    geo,
+    new THREE.MeshStandardMaterial({color:Math.random()*0xffffff})
+  );
+  mesh.position.set(0,0.5,0);
+  scene.add(mesh);
+  objects.push(mesh);
+}
+
+// ---------------- COLOR ----------------
+window.setColor = (c)=>{
+  if(selected) selected.material.color.set(c);
+};
+
+document.getElementById("colorPicker").addEventListener("input",(e)=>{
+  if(selected) selected.material.color.set(e.target.value);
+});
+
+// ---------------- SELECTION ----------------
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+window.addEventListener("click",(e)=>{
+  mouse.x = (e.clientX/innerWidth)*2-1;
+  mouse.y = -(e.clientY/innerHeight)*2+1;
+
+  raycaster.setFromCamera(mouse,camera);
+  const hits = raycaster.intersectObjects(objects);
+
+  if(hits.length>0){
+    selected = hits[0].object;
+    axisHelper.visible = true;
+    axisHelper.position.copy(selected.position);
+
+    document.getElementById("colorPicker").value =
+      "#" + selected.material.color.getHexString();
+  }
+});
+
+// ---------------- TRANSFORM CONTROLS ----------------
+window.addEventListener("keydown",(e)=>{
+  if(!selected) return;
+
+  if(e.key==="g") mode="move";
+  if(e.key==="s") mode="scale";
+  if(e.key==="r") mode="rotate";
+
+  if(e.key==="x") axis="x";
+  if(e.key==="y") axis="y";
+  if(e.key==="z") axis="z";
+
+  if(e.key==="Delete"){
+    scene.remove(selected);
+    objects = objects.filter(o=>o!==selected);
+    selected=null;
+    axisHelper.visible=false;
+  }
+});
+
+// ---------------- FIXED TRANSFORM LOGIC ----------------
+window.addEventListener("mousemove",(e)=>{
+  if(!selected || !mode) return;
+
+  let dx = e.movementX/80;
+  let dy = e.movementY/80;
+
+  // MOVE
+  if(mode==="move"){
+    if(axis==="x") selected.position.x += dx;
+    else if(axis==="y") selected.position.y -= dy;
+    else if(axis==="z") selected.position.z += dx;
+    else {
+      selected.position.x += dx;
+      selected.position.z += dx;
+    }
+  }
+
+  // SCALE
+  if(mode==="scale"){
+    let s = dx - dy;
+    selected.scale.multiplyScalar(1 + s);
+  }
+
+  // ROTATE (FIXED X/Y/Z)
+  if(mode==="rotate"){
+    if(axis==="x") selected.rotation.x += dy;
+    else if(axis==="y") selected.rotation.y += dx;
+    else if(axis==="z") selected.rotation.z += dx;
+    else {
+      selected.rotation.x += dy;
+      selected.rotation.y += dx;
+    }
+  }
+
+  axisHelper.position.copy(selected.position);
+});
+
+window.addEventListener("mouseup",()=>{
+  mode=null;
+  axis="all";
+});
+
+// ---------------- CAMERA ----------------
+let rotating=false,lastX=0,lastY=0;
+
+window.addEventListener("mousedown",(e)=>{
+  if(e.button===2){
+    rotating=true;
+    lastX=e.clientX;
+    lastY=e.clientY;
+  }
+});
+
+window.addEventListener("mousemove",(e)=>{
+  if(rotating){
+    let dx=(e.clientX-lastX)*0.005;
+    let dy=(e.clientY-lastY)*0.005;
+
+    camera.position.x += dx*5;
+    camera.position.y += dy*5;
+    camera.lookAt(0,0,0);
+
+    lastX=e.clientX;
+    lastY=e.clientY;
+  }
+});
+
+window.addEventListener("mouseup",()=>rotating=false);
+
+// ZOOM
+window.addEventListener("wheel",(e)=>{
+  camera.position.z += e.deltaY*0.01;
+});
+
+// Disable right click menu
+window.addEventListener("contextmenu",e=>e.preventDefault());
+
+// ---------------- RENDER LOOP ----------------
+function animate(){
+  requestAnimationFrame(animate);
+  renderer.render(scene,camera);
+}
+animate();
+
+// RESIZE
+window.addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+
+</body>
+</html>

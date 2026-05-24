@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Loading Interface</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+/* fade animation */
+.fade {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* loader */
+.box {
+    text-align: center;
+}
+
+.dots::after {
+    content: '';
+    animation: dots 1.2s infinite;
+}
+
+@keyframes dots {
+    0% { content: ''; }
+    33% { content: '.'; }
+    66% { content: '..'; }
+    100% { content: '...'; }
+}
+
+.robot {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="box fade">
+    <div class="robot">🤖</div>
+    <h2>Preparing Robotics Interface<span class="dots"></span></h2>
+    <p>Establishing secure AI connection...</p>
+</div>
+
+<script>
+setTimeout(() => {
+    document.body.style.transition = "opacity 1s";
+    document.body.style.opacity = "0";
+
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 1000);
+
+}, 2500);
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        window.location.href = "index.html";
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Robotics AI Boot Sequence</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #020617, #0f172a);
+    font-family: 'Segoe UI', sans-serif;
+    color: #38bdf8;
+}
+
+/* particle background */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* center UI */
+.container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* robot */
+.robot {
+    font-size: 4rem;
+    animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+/* title glitch */
+.glitch {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-top: 10px;
+    animation: flicker 1.2s infinite;
+}
+
+@keyframes flicker {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* log box */
+#log {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #a5f3fc;
+    height: 140px;
+    overflow: hidden;
+}
+
+/* progress */
+.bar {
+    width: 300px;
+    height: 8px;
+    background: #1e293b;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #38bdf8;
+    transition: width 0.3s;
+}
+
+/* skip text */
+.skip {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="container">
+
+    <div class="robot">🤖</div>
+
+    <div class="glitch">BOOTING ROBOTICS AI CORE...</div>
+
+    <div id="log"></div>
+
+    <div class="bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="skip">Press ENTER to skip</div>
+
+</div>
+
+<script>
+/* =========================
+   PARTICLE BACKGROUND
+========================= */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 80; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2,
+        dx: Math.random() - 0.5,
+        dy: Math.random() - 0.5
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#38bdf8";
+
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+/* =========================
+   BOOT SEQUENCE
+========================= */
+const logs = [
+    "Initializing neural network...",
+    "Loading robotics kernel...",
+    "Connecting sensor arrays...",
+    "Calibrating motors...",
+    "Activating Arduino bridge...",
+    "Launching AI decision engine...",
+    "Syncing automation systems...",
+    "Final checks complete ✔"
+];
+
+let logBox = document.getElementById("log");
+let progress = document.getElementById("progress");
+
+let i = 0;
+let percent = 0;
+
+function boot() {
+    if (i < logs.length) {
+        logBox.innerHTML += ">> " + logs[i] + "<br>";
+
+        percent += 100 / logs.length;
+        progress.style.width = percent + "%";
+
+        i++;
+        setTimeout(boot, 700);
+    } else {
+        setTimeout(() => {
+            window.location.href = "transition.html";
+        }, 1200);
+    }
+}
+
+boot();
+
+/* =========================
+   SKIP BUTTON (ENTER KEY)
+========================= */
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        window.location.href = "index.html";
+    }
+});
+</script>
+
+</body>
+</html>

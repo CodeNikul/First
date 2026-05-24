@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotics Hub</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+/* NAV */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+    background: #020617;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav h1 {
+    color: #38bdf8;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    color: #38bdf8;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h2 {
+    font-size: 3em;
+    color: #38bdf8;
+}
+
+/* CARDS */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card a {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+/* FLOATING ROBOT BUTTON */
+.robot-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.5rem;
+    background: #38bdf8;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 20px #38bdf8;
+    z-index: 9999;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <h1>🤖 Robotics Hub</h1>
+    <div>
+        <a href="#">Home</a>
+        <a href="#">Learn</a>
+        <a href="#">Projects</a>
+        <a href="#">Contact</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <h2>Welcome to Robotics World</h2>
+    <p>Explore, Learn, and Build the Future 🤖</p>
+</section>
+
+<section class="container">
+
+    <div class="card">
+        <h3>Scope of Robotics</h3>
+        <p>Explore career opportunities and future scope.</p>
+        <a href="SCOPE.html">Learn More →</a>
+    </div>
+
+    <div class="card">
+        <h3>Learning Robotics</h3>
+        <p>Start your robotics journey from basics to advanced.</p>
+        <a href="#">Start Learning →</a>
+    </div>
+
+    <div class="card">
+        <h3>Robotics Projects</h3>
+        <p>Build amazing robotics projects easily.</p>
+        <a href="#">View Projects →</a>
+    </div>
+
+    <div class="card">
+        <h3>AI in Robotics</h3>
+        <p>Understand how AI powers robots.</p>
+        <a href="#">Explore AI →</a>
+    </div>
+
+    <div class="card">
+        <h3>Robotics Tutorials</h3>
+        <p>Step-by-step tutorials for beginners.</p>
+        <a href="#">Watch Tutorials →</a>
+    </div>
+
+    <div class="card">
+        <h3>Robotics Competitions</h3>
+        <p>Participate in global robotics events.</p>
+        <a href="#">Join Now →</a>
+    </div>
+
+    <div class="card">
+        <h3>🤖 RoboBot</h3>
+        <p>An AI-powered chatbot for asking doubts.</p>
+        <a href="#">Open Chat →</a>
+    </div>
+
+</section>
+
+<!-- FLOATING BUTTON -->
+<div class="robot-btn" onclick="openAI()">🤖</div>
+
+<script>
+window.UNCLOSEAI_SYSTEM_PROMPT = `
+You are a Robotics AI tutor.
+Only answer robotics, AI in robotics, Arduino, sensors, ROS, automation, drones, and robotics careers.
+If user asks outside topic, politely say:
+"I only help with robotics topics. Ask me about robots, AI, sensors, or projects."
+`;
+
+window.UNCLOSEAI_FLOATING_BUTTON = false;
+window.UNCLOSEAI_SKIP_INIT = false;
+
+function openAI() {
+    if (window.uncloseai && window.uncloseai.toggleUncloseaiEmbeddedModal) {
+        window.uncloseai.toggleUncloseaiEmbeddedModal();
+    }
+}
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const chatBox =
+            document.querySelector("[data-chat-box]") ||
+            document.querySelector(".uncloseai-chat-box");
+
+        if (chatBox) {
+            chatBox.innerHTML = `
+                <div style="padding:8px; background:#0ea5e9; color:black; border-radius:8px;">
+                    🤖 Welcome to Robotics AI Assistant!<br>
+                    Ask me about Robotics, AI, Arduino, sensors, or automation.
+                </div>
+            `;
+        }
+    }, 1500);
+});
+</script>
+
+<!-- UNCLOSE AI -->
+<script src="https://uncloseai.com/uncloseai.js" type="module"></script>
+
+</body>
+</html>
