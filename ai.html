@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI & Automation in Robotics</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 50px;
+    background: #020617;
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: #38bdf8;
+}
+
+/* Section */
+.section {
+    padding: 40px;
+    text-align: center;
+}
+
+/* Cards */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    background: #334155;
+}
+
+/* Info box */
+.info-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: #020617;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🤖 AI & Automation in Robotics</h1>
+    <p>How Artificial Intelligence powers modern robots</p>
+</header>
+
+<section class="section">
+    <h2>Explore Key Concepts</h2>
+
+    <div class="container">
+
+        <div class="card" onclick="show('learning')">
+            <h3>Machine Learning</h3>
+            <p>Robots learn from data</p>
+        </div>
+
+        <div class="card" onclick="show('vision')">
+            <h3>Computer Vision</h3>
+            <p>Robots see and recognize objects</p>
+        </div>
+
+        <div class="card" onclick="show('decision')">
+            <h3>Decision Making</h3>
+            <p>Robots make smart choices</p>
+        </div>
+
+        <div class="card" onclick="show('automation')">
+            <h3>Automation</h3>
+            <p>Tasks done without human help</p>
+        </div>
+
+        <div class="card" onclick="show('self')">
+            <h3>Self Driving Systems</h3>
+            <p>Autonomous robots and cars</p>
+        </div>
+
+        <div class="card" onclick="show('future')">
+            <h3>Future Scope</h3>
+            <p>What lies ahead</p>
+        </div>
+
+    </div>
+
+    <div class="info-box">
+        <h2 id="title">Click a topic</h2>
+        <p id="content">Information will appear here.</p>
+    </div>
+</section>
+
+<script>
+
+function show(topic) {
+
+    let title = document.getElementById("title");
+    let content = document.getElementById("content");
+
+    if(topic === "learning") {
+        title.innerText = "Machine Learning";
+        content.innerText = "Machine learning allows robots to learn from data and improve performance over time without being explicitly programmed.";
+    }
+
+    else if(topic === "vision") {
+        title.innerText = "Computer Vision";
+        content.innerText = "Computer vision helps robots identify objects, detect faces, and understand surroundings using cameras.";
+    }
+
+    else if(topic === "decision") {
+        title.innerText = "Decision Making";
+        content.innerText = "AI enables robots to make intelligent decisions based on data, sensors, and previous experiences.";
+    }
+
+    else if(topic === "automation") {
+        title.innerText = "Automation";
+        content.innerText = "Automation allows robots to perform repetitive tasks efficiently without human intervention.";
+    }
+
+    else if(topic === "self") {
+        title.innerText = "Self Driving Systems";
+        content.innerText = "Self-driving robots and vehicles use AI, sensors, and algorithms to navigate without human control.";
+    }
+
+    else if(topic === "future") {
+        title.innerText = "Future Scope";
+        content.innerText = "AI-powered robots will transform industries like healthcare, space exploration, and smart cities.";
+    }
+}
+
+</script>
+
+</body>
+</html>
